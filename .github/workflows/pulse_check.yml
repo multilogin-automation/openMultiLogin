@@ -1,0 +1,23 @@
+name: Green Dot Engine - Pulse Check
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Update HEARTBEAT.md timestamp
+        run: |
+          echo "Last checked: $(date -u)" >> HEARTBEAT.md
+      - name: Commit and push
+        run: |
+          git config --global user.name "multilogin-automation[bot]"
+          git config --global user.email "bot@multilogin.com"
+          git add HEARTBEAT.md
+          git commit -m "chore: pulse check [skip ci]" || echo "No changes to commit"
+          git push
